@@ -3,7 +3,6 @@ const http = require("http");
 const qs = require('querystring');
 const fs=require('fs')
 let postHTML="";
-let encoding="utf-8";
 const processRef = cmd.run(
     `java -jar server.jar
     
@@ -14,7 +13,7 @@ processRef.stdout.on(
     'data',
     function (data) {
         data_line = data + '<br>' + data_line;
-        //console.log(data_line);
+        //console.log(postHTML.encode);
         update();
     }
 );
@@ -22,13 +21,13 @@ processRef.stdout.on(
 function update()
 {
     postHTML =
-        '<html><head><meta charset="'+encoding+'"><title>RW-HPS console</title></head>' +
+        '<html><head><meta charset="utf-8"><title>RW-HPS console</title></head>' +
         '<body>' +
         '<div style="width: 1000px;height: 600px; overflow-y:auto;">' + data_line + '</div><br>' +
         '<form method="post">' +
-        'command： <input name="command"><br>' +
+        'command:<input name="command"><br>' +
         '<input type="submit">' +
-        '</form>' +
+        '</form><h2>submit an empty command==refresh</h2>' +
         '</body></html>';
 }
 
@@ -50,9 +49,10 @@ http.createServer((req, res) => {
         // 解析参数
         body = qs.parse(body);
         // 设置响应头部信息及编码
-        res.writeHead(200, {'Content-Type': ('text/html; charset='+encoding)});
+        res.writeHead(200, {'Content-Type': ('text/html; charset=utf-8')});
 
         if (body.command) {
+            data_line='';
             handle(body.command)
             if(body.encoding)
             {
