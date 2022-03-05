@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RW-HPS Web Console</title>
+</head>
+<script>
+    function post()
+    {
+        let cmd = document.getElementById("cmd").innerText;
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST","");
+        xhr.setRequestHeader("command",cmd);
+        xhr.send();
+        document.getElementById("log").innerText=xhr.responseText;
+    }
+</script>
+<body>
+<div style="width: 1000px;height: 600px; overflow-y:auto;"><p id="log"></p></div>
+<div><input id="cmd"><button onclick=""><span>执行</span></button></div>
+</body>
+</html>

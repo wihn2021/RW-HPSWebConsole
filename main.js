@@ -1,7 +1,9 @@
 const cmd = require('node-cmd');
 const http = require("http");
 const qs = require('querystring');
-
+const fs=require('fs')
+let postHTML="";
+let encoding="utf-8";
 const processRef = cmd.run(
     `java -jar server.jar
     
@@ -11,35 +13,32 @@ let data_line = '';
 processRef.stdout.on(
     'data',
     function (data) {
-        data_line = data + '<br>'+data_line;
-        //console.log(data);
-        postHTML =
-            '<html><head><meta charset="gbk"><title>RW-HPS console</title></head>' +
-            '<body>' +
-            '<div style="width: 1000px;height: 600px; overflow-y:auto;">' + data_line + '</div><br>' +
-            '<form method="post">' +
-            'commandï¼š <input name="command"><br>' +
-            '<input type="submit">' +
-            '</form>' +
-            '</body></html>';
+        data_line = data + '<br>' + data_line;
+        //console.log(data_line);
+        update();
     }
 );
 
-
-const pythonTerminalInput = `help
-`;
-let postHTML =
-    '<html><head><meta charset="gbk"><title>RW-HPS console</title></head>' +
-    '<body>' +
-    '<div style="width: 1000px;height: 600px; overflow-y:auto;">' + data_line + '</div><br>' +
-    '<form method="post">' +
-    'commandï¼š <input name="command"><br>' +
-    '<input type="submit">' +
-    '</form>' +
-    '</body></html>';
+function update()
+{
+    postHTML =
+        '<html><head><meta charset="'+encoding+'"><title>RW-HPS console</title></head>' +
+        '<body>' +
+        '<div style="width: 1000px;height: 600px; overflow-y:auto;">' + data_line + '</div><br>' +
+        '<form method="post">' +
+        'command£º <input name="command"><br>' +
+        '<input type="submit">' +
+        '</form>' +
+        '</body></html>';
+}
 
 function handle(command) {
-    processRef.stdin.write(command + '\n');
+    if (command == "clear") {
+        data_line = '';
+    }
+        processRef.stdin.write(command + '\n');
+    
+
 }
 
 http.createServer((req, res) => {
@@ -48,20 +47,23 @@ http.createServer((req, res) => {
         body += chunk;
     });
     req.on('end', function () {
-        // è§£æžå‚æ•°
+        // ½âÎö²ÎÊý
         body = qs.parse(body);
-        // è®¾ç½®å“åº”å¤´éƒ¨ä¿¡æ¯åŠç¼–ç 
-        res.writeHead(200, {'Content-Type': 'text/html; charset=utf8'});
+        // ÉèÖÃÏìÓ¦Í·²¿ÐÅÏ¢¼°±àÂë
+        res.writeHead(200, {'Content-Type': ('text/html; charset='+encoding)});
 
         if (body.command) {
             handle(body.command)
+            if(body.encoding)
+            {
+                encoding=body.encoding;
+            }
             body = "";
-            setTimeout(()=>{
+            setTimeout(() => {
                 res.write(postHTML);
                 res.end();
-            },100)
-        }else
-        {
+            }, 100)
+        } else {
             res.write(postHTML);
             res.end();
         }
