@@ -1,22 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" onload="refresh()">
 <head>
     <meta charset="UTF-8">
     <title>RW-HPS Web Console</title>
 </head>
 <script>
-    function post()
-    {
-        let cmd = document.getElementById("cmd").innerText;
+    function post() {
+        let cmd = document.getElementById("cmd").value;
+        let l = document.getElementById("log");
         let xhr = new XMLHttpRequest();
-        xhr.open("POST","");
-        xhr.setRequestHeader("command",cmd);
-        xhr.send();
-        document.getElementById("log").innerText=xhr.responseText;
+        xhr.onreadystatechange=()=>{
+            if(xhr.readyState==4)
+            {
+                //alert('success');
+                l.innerHTML = xhr.responseText;
+            }
+        }
+        xhr.open("POST", "", true);
+        xhr.send('command=' + cmd);
+    setTimeout(()=>{refresh()},1000);
+
+    }
+    function refresh() {
+        let l = document.getElementById("log");
+        let xhr = new XMLHttpRequest();
+        xhr.onreadystatechange=()=>{
+            if(xhr.readyState==4)
+            {
+                //alert('success');
+                l.innerHTML = xhr.responseText;
+            }
+        }
+        xhr.open("POST", "", true);
+        xhr.send('command=refresh');
+        setTimeout(()=>{refresh()},1000);
     }
 </script>
 <body>
 <div style="width: 1000px;height: 600px; overflow-y:auto;"><p id="log"></p></div>
-<div><input id="cmd"><button onclick=""><span>执行</span></button></div>
+<div><input id="cmd">
+    <button onclick="post()"><span>执行</span></button>
+</div>
 </body>
 </html>
