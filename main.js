@@ -4,7 +4,7 @@ const qs = require('querystring');
 const fs=require('fs')
 let postHTML="";
 const processRef = cmd.run(
-    `java -jar server.jar
+    `java -Dfile.encoding=UTF-8 -jar server.jar
     
     `);
 
@@ -46,9 +46,9 @@ http.createServer((req, res) => {
         body += chunk;
     });
     req.on('end', function () {
-        // ½âÎö²ÎÊı
+        // è§£æå‚æ•°
         body = qs.parse(body);
-        // ÉèÖÃÏìÓ¦Í·²¿ĞÅÏ¢¼°±àÂë
+        // è®¾ç½®å“åº”å¤´éƒ¨ä¿¡æ¯åŠç¼–ç 
         res.writeHead(200, {'Content-Type': ('text/html; charset=utf-8')});
 
         if (body.command) {
