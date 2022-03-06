@@ -2,8 +2,8 @@ const cmd = require('node-cmd');
 const http = require("http");
 const qs = require('querystring');
 const fs = require('fs')
+const time=require('timers')
 const url = require('url');
-let postHTML = "";
 const processRef = cmd.run(
     `java -Dfile.encoding=UTF-8 -jar server.jar
     
@@ -43,9 +43,9 @@ http.createServer((req, res) => {
         body = qs.parse(body);
         // 设置响应头部信息及编码
         res.writeHead(200, {'Content-Type': ('text/html; charset=utf-8')});
-        console.log(body.command);
+        //console.log(body.command);
         if (body.command) {
-            console.log('post a command');
+            console.log( 'receive a ' +body.command+ ' command from '+req.socket.remoteAddress);
             //data_line = '';
             handle(body.command);
             body = "";
